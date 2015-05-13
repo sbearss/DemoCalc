@@ -1,0 +1,276 @@
+﻿
+@{
+    ViewBag.Title = "Calculator";
+}
+
+<h2>Calculator</h2>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script>
+    var operandLeft = '';
+    var operandRight = '';
+    var operator = '';
+    var decimalPt = '';
+    var lastIndexOfOperator = 0;
+    $(document).ready(function () {
+        $("#digit1").click(function () {
+            ProcessKey("1");
+        });
+
+            
+        $("#digit2").click(function () {
+            ProcessKey("2");
+        });
+        $("#digit3").click(function () {
+           ProcessKey( "3");
+        });
+        $("#digit4").click(function () {
+            ProcessKey("4");
+        });
+        $("#digit5").click(function () {
+            ProcessKey("5");
+        });
+        $("#digit6").click(function () {
+            ProcessKey("6");
+        });
+        $("#digit7").click(function () {
+            ProcessKey("7");
+        });
+        $("#digit8").click(function () {
+            ProcessKey("8");
+        });
+        $("#digit9").click(function () {
+            ProcessKey("9");
+        });
+        $("#digit0").click(function () {
+            ProcessKey("0");
+        });
+
+        function EvalExpression()
+        {
+            var leftSide = Number(operandLeft);
+            var rightSide = Number(operandRight);
+            var results = '';
+            try
+            {
+                switch (operator)
+                {
+                    case " / ":
+                        results = (leftSide / rightSide);
+                        break;
+                    case " * ":
+                        results = (leftSide * rightSide);
+                        break;
+                    case " + ":
+                        results = (leftSide + rightSide);
+
+                        break;
+                    case " - ":
+                        results = (leftSide - rightSide);
+                        break;
+                    default:
+                        alert("Unrecognized operator :" + operator);
+                        results = 'NAN';
+
+                        break;
+
+                }
+            }
+            catch(e)
+            {
+                results = 'NAN';
+
+            }
+            $('#Results').val(results);
+        }
+
+        function ProcessKey(digit) {
+            var txt = $("#Equation").val() + digit;
+            $("#Equation").val(txt);
+        }
+
+        function GetIndexOfExquation()
+        {
+            return $("#Equation").length;
+        }
+
+        //process non digit keys
+        $("#decPoint").click(function () {
+            if (decimalPt == '') {
+                decimalPt = ".";
+                ProcessKey(decimalPt);
+            }
+        });
+
+        //process operator clicks
+        //division
+        $("#opDiv").click(function () {
+            if (operator == '') {
+                operator = " / ";
+                operandLeft = $("#Equation").val();
+                ProcessKey(operator);
+                lastIndexOfOperator = GetIndexOfExquation();
+            }
+        });
+
+        //multiply
+        $("#opMult").click(function () {
+            if (operator == '') {
+                operator = " * ";
+                operandLeft = $("#Equation").val();
+                ProcessKey(operator);
+                lastIndexOfOperator = GetIndexOfExquation();
+            }
+        });
+        //Add
+        $("#opAdd").click(function () {
+            if (operator == '') {
+                operator = " + ";
+                operandLeft = $("#Equation").val();
+                ProcessKey(operator);
+                lastIndexOfOperator = GetIndexOfExquation();
+            }
+        });
+        //subtract
+        $("#opSub").click(function () {
+            if (operator == '') {
+                operator = " - ";
+                operandLeft = $("#Equation").val();
+                ProcessKey(operator);
+                lastIndexOfOperator = GetIndexOfExquation();
+            }
+        });
+
+        //clear
+        $("#opClear").click(function () {
+            
+            operator = "";
+            $("#Results").val('');
+            $("#Equation").val('');
+            operandLeft = '';
+            operandRight = '';
+            lastIndexOfOperator = 0;
+
+        });
+        $("#opMemAdd").click(function () {
+            alert("TODO memory add ");
+            
+        });
+        $("#opMemRecall").click(function () {
+            alert("TODO memory recall ");
+            
+        });
+
+        //evalute expression
+        //eventally move to an ajax call so we can handle more complexity
+        $("#opEval").click(function () {
+            if (operandLeft == '')
+            {
+          alert("Nothing to evaluate.")
+
+            }
+            else {
+                if(operator =='')
+                {
+                    //just use first operand as no operations are entered
+                    var str = $("#Results").val($('#Equation').val());
+                }
+                else
+                {
+                    if(lastIndexOfOperator > 0)//also verify that more chars were entered
+                    {
+                        var str = $("#Equation").val();
+                        var endstr = str.length;
+                        operandRight = str.substring(lastIndexOfOperator + 2, endstr);
+
+                        //do eval
+                        EvalExpression();
+
+                    }
+                    else
+                    {
+                        alert("The equation is not balanced and will result in NAN.");
+                    }
+                }
+            }
+        });
+
+
+
+
+    });
+ 
+
+  
+ 
+</script>
+<table class="table-responsive table-condensed">
+<tr>
+    <td>
+        <div style="display:inline-block">
+            @Html.Label("Results")
+            @Html.TextBox("Results", "", new { @readonly="readonly"})
+
+        </div>
+</td>
+</tr>
+    <tr>
+        <td>
+            <div style="display:inline-block">
+                @Html.Label("Equation")
+                @Html.TextBox("Equation", "", new { @readonly = "readonly" })
+
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="display:inline-block">
+                <input id="opMemAdd" class="btn btn-default CalcButton" type="button" value="M+">
+                <input id="opMemRecall" class="btn btn-default CalcButton" type="button" value="MR">
+                <input id="opClear" class="btn btn-default CalcButton" type="button" value="C">
+                <input id="opEval" class="btn btn-default CalcButton" type="button" value="=">
+            </div>
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            <div style="display:inline-block">
+                <input id="digit1" class="btn btn-default CalcButton" type="button" value="1">
+                <input id="digit2" class="btn btn-default CalcButton" type="button" value="2">
+                <input id="digit3" class="btn btn-default CalcButton" type="button" value="3">
+                <input id ="opDiv"class="btn btn-default CalcButton" type="button" value="/">
+
+            </div>
+        </td>
+    </tr>
+    <tr >
+        <td>
+            <div style="display:inline-block">
+                <input id="digit4" class="btn btn-default CalcButton" type="button" value="4">
+                <input id="digit5" class="btn btn-default CalcButton" type="button" value="5">
+                <input id="digit6" class="btn btn-default CalcButton" type="button" value="6">
+                <input id="opMult" class="btn btn-default CalcButton" type="button" value="*">
+</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="display:inline-block">
+                <input id="digit7" class="btn btn-default CalcButton" type="button" value="7">
+                <input id="digit8" class="btn btn-default CalcButton" type="button" value="8">
+                <input id="digit9" class="btn btn-default CalcButton" type="button" value="9">
+                <input id="opSub" class="btn btn-default CalcButton" type="button" value="-">
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="display:inline-block">
+                <input id="digit0" class="btn btn-default" style="width:72px" type="button" value="0">
+                <input id="decPoint" class="btn btn-default CalcButton" type="button" value=".">
+                <input id="opAdd" class="btn btn-default CalcButton" type="button" value="+">
+           </div>
+        </td>
+    </tr>
+</table>
